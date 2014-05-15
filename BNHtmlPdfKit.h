@@ -99,6 +99,16 @@ Base URL to use.
 @property (nonatomic, retain) NSURL *baseUrl;
 
 /**
+The header view for each page
+ */
+@property (nonatomic, strong) UIView *headerView;
+
+/**
+The footer view for each page
+ */
+@property (nonatomic, strong) UIView *footerView;
+
+/**
  The receiver's `delegate`.
 
  The `delegate` is sent messages when content is loading.

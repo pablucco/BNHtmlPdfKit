@@ -18,6 +18,9 @@
 @property (nonatomic, assign) CGFloat topAndBottomMarginSize;
 @property (nonatomic, assign) CGFloat leftAndRightMarginSize;
 
+@property (nonatomic, strong) UIView *headerView;
+@property (nonatomic, strong) UIView *footerView;
+
 @end
 
 
@@ -31,6 +34,40 @@
 
 - (CGRect)printableRect {
 	return CGRectInset([self paperRect], self.leftAndRightMarginSize, self.topAndBottomMarginSize);
+}
+
+- (void)drawHeaderForPageAtIndex:(NSInteger)pageIndex
+                          inRect:(CGRect)headerRect
+{
+    if (self.headerView != nil) {
+        [self.headerView setBackgroundColor:[UIColor whiteColor]];
+        UIImage *img = [self imageWithView:self.headerView];
+        
+        [img drawInRect:headerRect];
+    }
+}
+
+- (void)drawFooterForPageAtIndex:(NSInteger)pageIndex
+                          inRect:(CGRect)footerRect
+{
+    if (self.footerView != nil) {
+        [self.footerView setBackgroundColor:[UIColor whiteColor]];
+        UIImage *img = [self imageWithView:self.footerView];
+        
+        [img drawInRect:footerRect];
+    }
+}
+
+- (UIImage *)imageWithView:(UIView *)view
+{
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    
+    UIImage * img = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return img;
 }
 
 @end
@@ -445,6 +482,11 @@
 	BNHtmlPdfKitPageRenderer *renderer = [[BNHtmlPdfKitPageRenderer alloc] init];
 	renderer.topAndBottomMarginSize = self.topAndBottomMarginSize;
 	renderer.leftAndRightMarginSize = self.leftAndRightMarginSize;
+    renderer.headerView = self.headerView;
+    renderer.footerView = self.footerView;
+    
+    [renderer setHeaderHeight:50.0f];
+    [renderer setFooterHeight:50.0f];
 
 	[renderer addPrintFormatter:formatter startingAtPageAtIndex:0];
 
@@ -461,7 +503,27 @@
 
 	for (NSInteger i = 0; i < pages; i++) {
 		UIGraphicsBeginPDFPage();
+//        
+//        if (self.headerView != nil)
+//        {
+//            [self.headerView setFrame:CGRectMake(0, 0, pageSize.width, 50)];
+//            
+//            [renderer setHeaderHeight:self.headerView.frame.size.height];
+//            [self.headerView.layer renderInContext:UIGraphicsGetCurrentContext()];
+//        }
+        
 		[renderer drawPageAtIndex:i inRect:renderer.paperRect];
+//        
+//        if (self.footerView != nil)
+//        {
+//            NSLog(@"Page H: %f", pageSize.height);
+//            
+//            [self.footerView setFrame:CGRectMake(0, pageSize.height-50, pageSize.width, 50)];
+//            [self.footerView.layer setFrame:CGRectMake(0, pageSize.height-50, pageSize.width, 50)];
+//            
+//            [renderer setFooterHeight:self.footerView.frame.size.height];
+//            [self.footerView.layer renderInContext:UIGraphicsGetCurrentContext()];
+//        }
 	}
 
 	UIGraphicsEndPDFContext();
