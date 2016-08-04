@@ -482,11 +482,11 @@
 	BNHtmlPdfKitPageRenderer *renderer = [[BNHtmlPdfKitPageRenderer alloc] init];
 	renderer.topAndBottomMarginSize = self.topAndBottomMarginSize;
 	renderer.leftAndRightMarginSize = self.leftAndRightMarginSize;
-    renderer.headerView = self.headerView;
-    renderer.footerView = self.footerView;
+	renderer.headerView = self.headerView;
+	renderer.footerView = self.footerView;
     
-    [renderer setHeaderHeight:50.0f];
-    [renderer setFooterHeight:50.0f];
+	[renderer setHeaderHeight:CGRectGetHeight(self.headerView.frame)];
+	[renderer setFooterHeight:CGRectGetHeight(self.footerView.frame)];
 
 	[renderer addPrintFormatter:formatter startingAtPageAtIndex:0];
 
@@ -503,27 +503,8 @@
 
 	for (NSInteger i = 0; i < pages; i++) {
 		UIGraphicsBeginPDFPage();
-//        
-//        if (self.headerView != nil)
-//        {
-//            [self.headerView setFrame:CGRectMake(0, 0, pageSize.width, 50)];
-//            
-//            [renderer setHeaderHeight:self.headerView.frame.size.height];
-//            [self.headerView.layer renderInContext:UIGraphicsGetCurrentContext()];
-//        }
-        
+
 		[renderer drawPageAtIndex:i inRect:renderer.paperRect];
-//        
-//        if (self.footerView != nil)
-//        {
-//            NSLog(@"Page H: %f", pageSize.height);
-//            
-//            [self.footerView setFrame:CGRectMake(0, pageSize.height-50, pageSize.width, 50)];
-//            [self.footerView.layer setFrame:CGRectMake(0, pageSize.height-50, pageSize.width, 50)];
-//            
-//            [renderer setFooterHeight:self.footerView.frame.size.height];
-//            [self.footerView.layer renderInContext:UIGraphicsGetCurrentContext()];
-//        }
 	}
 
 	UIGraphicsEndPDFContext();
